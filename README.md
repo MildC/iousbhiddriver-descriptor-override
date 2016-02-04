@@ -4,6 +4,8 @@
 IOUSBHIDDriverDescriptorOverride
 ================================
 
+[![Build Status](https://travis-ci.org/thefloweringash/iousbhiddriver-descriptor-override.svg?branch=master)](https://travis-ci.org/thefloweringash/iousbhiddriver-descriptor-override)
+
 This OS X kernel extension provides a method for overriding a HID
 descriptor and ignoring the descriptor provided by the device. This is
 useful when the HID descriptor returned by a HID device is invalid or
@@ -12,8 +14,11 @@ incorrect.
 Supported Devices
 -----------------
 
- * Noppoo Choc Mini
- * Noppoo Choc Pro
+ * Noppoo Choc Mini (1006:0022, 1007:8400)
+ * Noppoo Choc Mid (04d9:1829)
+ * Noppoo Choc Pro (04f3:5a5a, 06fe:104e)
+ * Tt eSPORTS Poseidon ZX (0566:3063)
+ * Ozone StrikeBattle (04d9:a096)
 
 Including the support from the [original project](#acknowledgements)
 for
@@ -59,13 +64,41 @@ The [Downloads][] section contains installer packages.
 
 To build and install from source
 
+	# dependencies
+	gem install bundler
+	bundle install --without scan
+	
+	# build
 	xcodebuild
 	sudo cp -r build/Release/IOUSBHIDDriverDescriptorOverride.kext \
 	    /System/Library/Extensions
 	sudo kextutil \
 	    /System/Library/Extensions/IOUSBHIDDriverDescriptorOverride.kext
 
-[downloads]: /thefloweringash/iousbhiddriver-descriptor-override/downloads
+[downloads]: https://thefloweringash.com/iousbhiddriver-descriptor-override/downloads/
+
+Unsupported Devices
+-------------------
+
+The Noppoo devices have a range of identifiers and descriptors. If a
+device is not supported, there is an experimental feature that will
+generate the Info.plist section for any connected device that has the
+Noppoo-style overlapping descriptors.
+
+	# dependencies
+	brew install libusb
+	bundle install --without ""
+	
+	# build
+	rake scan
+
+A file for your keyboard will be generated in the `descriptors`
+directory. Follow the instructions in the previous section to install
+the resulting module.
+
+This feature is experimental, but works for limited test cases. If the
+resulting .kext works with your keyboard, submit a pull request with
+the new descriptors, otherwise open an issue with the new descriptors.
 
 Troubleshooting
 ---------------
